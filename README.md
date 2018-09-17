@@ -12,7 +12,7 @@ endpoint: AAD V1
 
 When the app runs on Azure VM, you can use MSI and Key Vault, instead of putting credentials in your code.
 
-1. Run the commands below.
+1. Run the commands below. (Same thing can be done also in Azure Portal.)
 ```PowerShell
 $ResourceGroupName = "ResourceGroupName"
 $VmName = "VmName"
