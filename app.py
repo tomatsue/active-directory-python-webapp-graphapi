@@ -2,7 +2,9 @@ import adal
 import flask
 import uuid
 import requests
+
 import config
+import kvutil
 
 app = flask.Flask(__name__)
 app.debug = True
@@ -14,7 +16,7 @@ REDIRECT_URI = 'http://localhost:{}/getAToken'.format(PORT)
 TEMPLATE_AUTHZ_URL = ('https://login.microsoftonline.com/{}/oauth2/authorize?' +
                       'response_type=code&client_id={}&redirect_uri={}&' +
                       'state={}&resource={}')
-
+CLIENT_ID, CLIENT_SECRET = kvutil.get_app_secret(config.VAULT_URL, config.APP_SECRET_NAME)
 
 @app.route("/")
 def main():
@@ -30,7 +32,7 @@ def login():
     flask.session['state'] = auth_state
     authorization_url = TEMPLATE_AUTHZ_URL.format(
         config.TENANT,
-        config.CLIENT_ID,
+        CLIENT_ID,
         REDIRECT_URI,
         auth_state,
         config.RESOURCE)
@@ -47,7 +49,7 @@ def main_logic():
         raise ValueError("State does not match")
     auth_context = adal.AuthenticationContext(AUTHORITY_URL)
     token_response = auth_context.acquire_token_with_authorization_code(code, REDIRECT_URI, config.RESOURCE,
-                                                                        config.CLIENT_ID, config.CLIENT_SECRET)
+                                                                        CLIENT_ID, CLIENT_SECRET)
     # It is recommended to save this to a database when using a production app.
     flask.session['access_token'] = token_response['accessToken']
 
