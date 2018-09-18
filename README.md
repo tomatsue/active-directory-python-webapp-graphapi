@@ -34,8 +34,12 @@ Set-AzureRmKeyVaultAccessPolicy -VaultName $VaultName -ObjectId $VmPrincipalId  
 $SecureSecret = ConvertTo-SecureString -String $Secret -AsPlainText -Force
 Set-AzureKeyVaultSecret -VaultName $VaultName -Name $SecretName -SecretValue $SecureSecret
 ```
+2. Install Key Vault module
+```bash
+$ pip install azure-keyvault
+```
 
-2. Set `VAULT_URL` and `APP_SECRET_NAME` in `config.py`.
+3. Set `VAULT_URL` and `APP_SECRET_NAME` in `config.py`.
 
 # Calling Microsoft Graph from a web app using ADAL Python
 
