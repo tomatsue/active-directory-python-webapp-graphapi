@@ -7,6 +7,40 @@ client: Python Web App
 service: Microsoft Graph
 endpoint: AAD V1
 ---
+
+## About this branch
+
+When the app runs on Azure VM, you can use MSI and Key Vault, instead of putting credentials in your code.
+
+1. Run the commands below. (Same thing can be done also in Azure Portal.)
+```PowerShell
+$ResourceGroupName = "ResourceGroupName"
+$VmName = "VmName"
+$VaultName = "VaultName"
+$SecretName = "testapp"
+$Secret = '{"client_id": "CLIENT_ID", "client_secret": "CLIENT_SECRET"}'
+
+# Connect to Azure Resource Manager
+Connect-AzureRmAccount
+
+# Create a key vault
+New-AzureRmKeyVault -VaultName $VaultName -ResourceGroupName $ResourceGroupName -Location 'East US'
+
+# Create a key vault access policy permitting your VM to get secrets
+$VmPrincipalId = (Get-AzureRmVM -ResourceGroupName $ResourceGroupName -Name $VmName).Identity.PrincipalId
+Set-AzureRmKeyVaultAccessPolicy -VaultName $VaultName -ObjectId $VmPrincipalId  -PermissionsToSecrets get
+
+# Create your app's secret
+$SecureSecret = ConvertTo-SecureString -String $Secret -AsPlainText -Force
+Set-AzureKeyVaultSecret -VaultName $VaultName -Name $SecretName -SecretValue $SecureSecret
+```
+2. Install Key Vault module
+```bash
+$ pip install azure-keyvault
+```
+
+3. Set `VAULT_URL` and `APP_SECRET_NAME` in `config.py`.
+
 # Calling Microsoft Graph from a web app using ADAL Python
 
 <!--![Build badge](https://travis-ci.org/AzureAD/azure-activedirectory-library-for-python/builds/358958147?utm_source=github_status&utm_medium=notification#)-->
@@ -91,8 +125,8 @@ Open the config.py file to configure the project
 
 1. Open the `config.py` file
 1. Find the app key `TENANT` and replace the existing value with your AAD tenant name.
-1. Find the app key `CLIENT_SECRET` and replace the existing value with the key you saved during the creation of the `PythonWebApp` app in the Azure portal.
-1. Find the app key `CLIENT_ID` and replace the existing value with the application ID (client ID) of the `PythonWebApp` application from the Azure portal.
+1. ~~Find the app key `CLIENT_SECRET` and replace the existing value with the key you saved during the creation of the `PythonWebApp` app in the Azure portal.~~
+1. ~~Find the app key `CLIENT_ID` and replace the existing value with the application ID (client ID) of the `PythonWebApp` application from the Azure portal.~~
 
 ### Step 4. Run the sample
 
