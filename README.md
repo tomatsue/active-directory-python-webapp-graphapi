@@ -8,9 +8,11 @@ service: Microsoft Graph
 endpoint: AAD V1
 ---
 
-## About this branch
+## About this repo
 
-When the app runs on Azure VM, you can use MSI and Key Vault, instead of putting credentials in your code.
+This repo is forked from [Azure-Samples/active-directory-python-webapp-graphapi](https://github.com/Azure-Samples/active-directory-python-webapp-graphapi).
+
+This app runs on Azure VM and uses MSI and Key Vault, instead of putting the credentials in the code.
 
 1. Run the commands below. (Same thing can be done also in Azure Portal.)
 ```PowerShell
